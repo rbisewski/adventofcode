@@ -1,2 +1,3 @@
-# adventofcode2017
-Solutions for the 2017 adventofcode.com puzzles.
+# Adventofcode.com Puzzles
+
+Solutions for the various adventofcode.com puzzles.
