@@ -337,13 +337,6 @@ func assignGroups(matrix [][]MatrixElement) ([][]MatrixElement, int64) {
 				continue
 			}
 
-			// start with the first used element
-			if numberOfGroups == 0 {
-				matrix[x][y].Group = 1
-				numberOfGroups++
-				continue
-			}
-
 			makeNewGroup := true
 
 			// (x+1, y)
