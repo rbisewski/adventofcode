@@ -79,6 +79,9 @@ func main() {
 		}
 	}
 
+	var generatorA int64 = 0
+	var generatorB int64 = 0
+
 	count := 0
 	judgmentAmount := 40000000
 
@@ -101,7 +104,42 @@ func main() {
 		}
 	}
 
-	fmt.Println(count)
+	fmt.Println("Part #1:", count)
+
+	count = 0
+	judgmentAmount = 5000000
+
+	for i := 0; i < judgmentAmount; i++ {
+
+		for {
+			generatorA = (generatorAPrevious * generatorAFactor) % generationDividend
+			if generatorA%4 == 0 {
+				break
+			}
+		}
+
+		for {
+			generatorB = (generatorBPrevious * generatorBFactor) % generationDividend
+			if generatorB%8 == 0 {
+				break
+			}
+		}
+
+		generatorAPrevious = generatorA
+		generatorBPrevious = generatorB
+
+		gaAsString := strconv.FormatInt(generatorAPrevious, 2)
+		gbAsString := strconv.FormatInt(generatorBPrevious, 2)
+
+		ga16 := last16Chars(gaAsString)
+		gb16 := last16Chars(gbAsString)
+
+		if ga16 == gb16 {
+			count++
+		}
+	}
+
+	fmt.Println("Part #2:", count)
 }
 
 func last16Chars(str string) string {
