@@ -137,6 +137,9 @@ func main() {
 
 	oneBillion := 1000000000
 
+	// pattern repeats itself every 60 runs
+	oneBillion %= 60
+
 	// NOTE: enable this to test input0.txt
 	//programOrder = "abcde"
 
