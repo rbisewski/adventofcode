@@ -70,6 +70,7 @@ func main() {
 	re := regexp.MustCompile("p=<(-?\\d+),(-?\\d+),(-?\\d+)>, v=<(-?\\d+),(-?\\d+),(-?\\d+)>, a=<(-?\\d+),(-?\\d+),(-?\\d+)>")
 
 	particles := make(map[int]Particle, 0)
+	particleCollisions := make(map[int]Particle, 0)
 	p := 0
 	for _, line := range lines {
 
@@ -124,6 +125,9 @@ func main() {
 		particles[p] = Particle{p, position, velocity,
 			acceleration, 0}
 
+		particleCollisions[p] = Particle{p, position, velocity,
+			acceleration, 0}
+
 		p++
 	}
 
@@ -176,4 +180,81 @@ func main() {
 	}
 
 	fmt.Println("Part 1:", closestParticle)
+
+	max = 2000
+	particlesLeft := len(particleCollisions)
+
+	for i := 0; i < max; i++ {
+
+		particleCollisions =
+			cleanupCollidedParticles(particleCollisions)
+
+		for key, _ := range particleCollisions {
+
+			thisParticle := particleCollisions[key]
+
+			thisParticle.V.X += thisParticle.A.X
+			thisParticle.V.Y += thisParticle.A.Y
+			thisParticle.V.Z += thisParticle.A.Z
+
+			thisParticle.P.X += thisParticle.V.X
+			thisParticle.P.Y += thisParticle.V.Y
+			thisParticle.P.Z += thisParticle.V.Z
+
+			particleCollisions[key] = thisParticle
+		}
+	}
+
+	for _, ptc := range particleCollisions {
+		if ptc.ID == -1 {
+			particlesLeft--
+		}
+	}
+
+	fmt.Println("Part 2:", particlesLeft)
+}
+
+func cleanupCollidedParticles(p map[int]Particle) map[int]Particle {
+
+	for key, ptc := range p {
+
+		if ptc.ID == -1 {
+			continue
+		}
+
+		thisParticle := p[key]
+		thisX := thisParticle.P.X
+		thisY := thisParticle.P.Y
+		thisZ := thisParticle.P.Z
+		hasCollided := false
+
+		for key2, ptc2 := range p {
+
+			if ptc2.ID == -1 || ptc.ID == ptc2.ID {
+				continue
+			}
+
+			thatParticle := p[key2]
+			thatX := thatParticle.P.X
+			thatY := thatParticle.P.Y
+			thatZ := thatParticle.P.Z
+
+			if thisX == thatX &&
+				thisY == thatY &&
+				thisZ == thatZ {
+
+				thatParticle.ID = -1
+				p[key2] = thatParticle
+				hasCollided = true
+			}
+
+		}
+
+		if hasCollided {
+			thisParticle.ID = -1
+			p[key] = thisParticle
+		}
+	}
+
+	return p
 }
