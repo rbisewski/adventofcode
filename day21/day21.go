@@ -118,7 +118,44 @@ func nintyDegreeFlipString(elements []string) string {
 		return ""
 	}
 
+	// inverse the position the elements
+	array := make([]string, 0)
+	for i := len(elements) - 1; i >= 0; i-- {
+		array = append(array, elements[i])
+	}
+
+	// prepare each of the subsections
+	matrix := make([][]string, 0)
+	for i := 0; i < len(array); i++ {
+
+		subsection := make([]string, 0)
+
+		matrix = append(matrix, subsection)
+	}
+
+	// for every element...
+	// TODO: fix this
+	for _, elm := range array {
+
+		// ... for every character in the element-string
+		for i := 0; i < len(elm); i++ {
+
+			// ... append that character to the transposed matrix
+			char := string(elm[i])
+			matrix[i] = append(matrix[i], char)
+		}
+	}
+
 	newString := ""
+	for _, tuple := range matrix {
+
+		line := ""
+		for _, elm := range tuple {
+			line += elm
+		}
+		newString += line + "/"
+	}
+	newString = strings.Trim(newString, "/")
 
 	return newString
 }
