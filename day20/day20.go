@@ -26,15 +26,11 @@ type Vertex struct {
 	Z int
 }
 
-type Instruction struct {
-	Particle int
-	P        Vertex
-	V        Vertex
-	A        Vertex
-}
-
 type Particle struct {
 	ID                int
+	P                 Vertex
+	V                 Vertex
+	A                 Vertex
 	ManhattanDistance int
 }
 
@@ -73,8 +69,7 @@ func main() {
 
 	re := regexp.MustCompile("p=<(-?\\d+),(-?\\d+),(-?\\d+)>, v=<(-?\\d+),(-?\\d+),(-?\\d+)>, a=<(-?\\d+),(-?\\d+),(-?\\d+)>")
 
-	// assemble instructions
-	instructions := make([]Instruction, 0)
+	particles := make(map[int]Particle, 0)
 	p := 0
 	for _, line := range lines {
 
@@ -119,42 +114,64 @@ func main() {
 			os.Exit(1)
 		}
 
-		position := Vertex{int(positionX), int(positionY), int(positionZ)}
-		velocity := Vertex{int(velocityX), int(velocityY), int(velocityZ)}
-		acceleration := Vertex{int(accelerationX), int(accelerationY), int(accelerationZ)}
+		position := Vertex{int(positionX), int(positionY),
+			int(positionZ)}
+		velocity := Vertex{int(velocityX), int(velocityY),
+			int(velocityZ)}
+		acceleration := Vertex{int(accelerationX), int(accelerationY),
+			int(accelerationZ)}
 
-		instruct := Instruction{p, position, velocity, acceleration}
+		particles[p] = Particle{p, position, velocity,
+			acceleration, 0}
 
-		instructions = append(instructions, instruct)
-
-		p = (p + 1) % 2
+		p++
 	}
 
-	// assemble particles
-	particles := make(map[int]Particle)
-	particles[0] = Particle{0, 0}
-	particles[1] = Particle{1, 0}
+	closestParticle := -1
+	counter := 0
+	max := 2000000
 
-	// compute particle positions
-	for _, instr := range instructions {
+	for counter < max {
 
-		sum := int(math.Abs(float64(instr.P.X)) + math.Abs(float64(instr.P.Y)) + math.Abs(float64(instr.P.Z)))
+		id := -1
+		closestDistance := -1
 
-		thisParticle := particles[instr.Particle]
+		for key, ptc := range particles {
 
-		thisParticle.ManhattanDistance += sum
+			thisParticle := particles[key]
 
-		particles[instr.Particle] = thisParticle
-	}
+			sum := int(math.Abs(float64(ptc.P.X)) +
+				math.Abs(float64(ptc.P.Y)) +
+				math.Abs(float64(ptc.P.Z)))
 
-	// figure out closest particle over time
-	closestParticle := 0
-	nearestValue := 1000000000000000
-	for _, p := range particles {
+			thisParticle.ManhattanDistance = sum
 
-		if p.ManhattanDistance < nearestValue {
-			closestParticle = p.ID
-			nearestValue = p.ManhattanDistance
+			thisParticle.V.X += thisParticle.A.X
+			thisParticle.V.Y += thisParticle.A.Y
+			thisParticle.V.Z += thisParticle.A.Z
+
+			thisParticle.P.X += thisParticle.V.X
+			thisParticle.P.Y += thisParticle.V.Y
+			thisParticle.P.Z += thisParticle.V.Z
+
+			particles[key] = thisParticle
+
+			if (id == -1) ||
+				(thisParticle.ManhattanDistance < closestDistance) {
+
+				id = thisParticle.ID
+				closestDistance = thisParticle.ManhattanDistance
+			}
+		}
+
+		if closestParticle == -1 {
+			closestParticle = id
+			counter = 1
+		} else if id == closestParticle {
+			counter++
+		} else {
+			closestParticle = -1
+			counter = 0
 		}
 	}
 
