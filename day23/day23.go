@@ -12,24 +12,7 @@ import (
 
 var (
 	file = ""
-
-	lastSound = 0
-
-	programOneSentValue = 0
-
-	programZero Program
-	programOne  Program
 )
-
-type Program struct {
-	ID        int
-	Registers map[string]int
-	Queue     []int
-	Lines     []string
-	Pos       int
-	Waiting   bool
-	Done      bool
-}
 
 func init() {
 	flag.StringVar(&file, "file", "",
@@ -134,58 +117,52 @@ func main() {
 	// Part 2
 	//
 
-	registers = make(map[string]int)
+	fmt.Println("Part 2:", findH())
+}
 
-	registers["a"]++
+func findH() int {
 
-	i = 0
+	a := 1
+	d := 0
+	f := 0
+	g := 0
+	h := 0
 
-	for i >= 0 && i < len(lines) {
+	b := 93
+	c := b
 
-		instruct := strings.Split(lines[i], " ")
+	if a != 0 {
 
-		first := 0
-		second := 0
-		firstStr := ""
-
-		firstStr = re.FindString(instruct[1])
-		if firstStr == "" {
-			x, _ := strconv.ParseInt(instruct[1], 10, 64)
-			first = int(x)
-		} else {
-			first = registers[instruct[1]]
-		}
-
-		if len(instruct) > 2 {
-
-			if re.FindString(instruct[2]) == "" {
-				x, _ := strconv.ParseInt(instruct[2], 10, 64)
-				second = int(x)
-			} else {
-				second = registers[instruct[2]]
-			}
-		}
-
-		switch instruct[0] {
-
-		case "set":
-			registers[firstStr] = second
-		case "add":
-			registers[firstStr] += second
-		case "sub":
-			registers[firstStr] -= second
-		case "mul":
-			registers[firstStr] *= second
-			mulInstructionsExecuted++
-		case "jnz":
-			if first != 0 {
-				i += second
-				continue
-			}
-		}
-
-		i++
+		b *= 100
+		b -= -100000
+		c = b
+		c -= -17000
 	}
 
-	fmt.Println("Part 2:", registers["h"])
+	for {
+		f = 1
+
+		for d = 2; d < b; d++ {
+
+			if b%d == 0 {
+				f = 0
+				break
+			}
+		}
+
+		if f == 0 {
+			h -= -1
+		}
+
+		g = b
+		g -= c
+
+		if g == 0 {
+			return h
+		}
+
+		b -= -17
+	}
+
+	return h
 }
