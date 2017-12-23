@@ -144,8 +144,6 @@ func main() {
 
 		instruct := strings.Split(lines[i], " ")
 
-		fmt.Println(instruct, registers["g"])
-
 		first := 0
 		second := 0
 		firstStr := ""
@@ -190,84 +188,4 @@ func main() {
 	}
 
 	fmt.Println("Part 2:", registers["h"])
-}
-
-func executeNext(p Program) Program {
-
-	if p.Done {
-		return p
-
-	} else if p.Pos < 0 || p.Pos >= len(p.Lines) {
-		p.Waiting = true
-		p.Done = true
-		return p
-	}
-
-	re := regexp.MustCompile("[a-z]")
-
-	instruct := strings.Split(p.Lines[p.Pos], " ")
-
-	first := 0
-	second := 0
-	firstStr := ""
-
-	firstStr = re.FindString(instruct[1])
-	if firstStr == "" {
-		x, _ := strconv.ParseInt(instruct[1], 10, 64)
-		first = int(x)
-	} else {
-		first = p.Registers[instruct[1]]
-	}
-
-	if len(instruct) > 2 {
-
-		if re.FindString(instruct[2]) == "" {
-			x, _ := strconv.ParseInt(instruct[2], 10, 64)
-			second = int(x)
-		} else {
-			second = p.Registers[instruct[2]]
-		}
-	}
-
-	if p.Waiting && instruct[0] != "rcv" {
-		return p
-	}
-
-	switch instruct[0] {
-
-	case "snd":
-		if p.ID == 0 {
-			programOne.Queue = append(programOne.Queue, first)
-		} else if p.ID == 1 {
-			programOneSentValue++
-			programZero.Queue = append(programZero.Queue, first)
-		}
-	case "set":
-		p.Registers[firstStr] = second
-	case "add":
-		p.Registers[firstStr] += second
-	case "mul":
-		p.Registers[firstStr] *= second
-	case "mod":
-		p.Registers[firstStr] = p.Registers[firstStr] % second
-	case "rcv":
-		if len(p.Queue) > 0 {
-			value := 0
-			value, p.Queue = p.Queue[0], p.Queue[1:]
-			p.Registers[firstStr] = value
-			p.Waiting = false
-		} else {
-			p.Waiting = true
-			return p
-		}
-	case "jgz":
-		if first > 0 {
-			p.Pos = p.Pos + second
-			return p
-		}
-	}
-
-	p.Pos = p.Pos + 1
-
-	return p
 }
