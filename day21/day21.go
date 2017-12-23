@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"regexp"
 	"strings"
 )
 
@@ -70,7 +71,7 @@ func main() {
 	// possibilities
 	for key, value := range arrangements {
 
-		keyParts := strings.Split(key, "\\")
+		keyParts := strings.Split(key, "/")
 
 		// vertical flipped
 		verticalFlippedKey := ""
@@ -93,7 +94,21 @@ func main() {
 		arrangements[horizontalFlippedKey] = value
 	}
 
-	fmt.Println(arrangements)
+	shape := ".#./..#/###"
+
+	for iteration := 1; iteration <= 5; iteration++ {
+
+		if iteration == 1 {
+			shape = arrangements[shape]
+			continue
+		}
+	}
+
+	hashtag := regexp.MustCompile("#")
+	matches := hashtag.FindAllString(shape, -1)
+	pixelsOn := len(matches)
+
+	fmt.Println(shape, pixelsOn)
 }
 
 func verticalFlipString(s string) string {
@@ -124,38 +139,24 @@ func nintyDegreeFlipString(elements []string) string {
 		array = append(array, elements[i])
 	}
 
-	// prepare each of the subsections
-	matrix := make([][]string, 0)
-	for i := 0; i < len(array); i++ {
+	lines := ""
+	length := len(array[0])
 
-		subsection := make([]string, 0)
+	// for every character in the element-string...
+	for i := 0; i < length; i++ {
 
-		matrix = append(matrix, subsection)
-	}
-
-	// for every element...
-	// TODO: fix this
-	for _, elm := range array {
-
-		// ... for every character in the element-string
-		for i := 0; i < len(elm); i++ {
+		// obtain the i-th value for every element...
+		line := ""
+		for _, elm := range array {
 
 			// ... append that character to the transposed matrix
 			char := string(elm[i])
-			matrix[i] = append(matrix[i], char)
+			line += char
 		}
+		lines += "/" + line
 	}
 
-	newString := ""
-	for _, tuple := range matrix {
+	lines = strings.Trim(lines, "/")
 
-		line := ""
-		for _, elm := range tuple {
-			line += elm
-		}
-		newString += line + "/"
-	}
-	newString = strings.Trim(newString, "/")
-
-	return newString
+	return lines
 }
