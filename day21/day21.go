@@ -69,6 +69,10 @@ func main() {
 
 	// for every key, flip each of the input keys to account for all
 	// possibilities
+	//
+	// TODO: fix this since Golang randomizes array order, so this is
+	//       not an ideal solution
+	//
 	for key, value := range arrangements {
 
 		keyParts := strings.Split(key, "/")
