@@ -36,14 +36,24 @@ func main() {
 
 	array := strings.Split(fileContents, "\n")
 
+	// splitting by \n tends to leave empty elements at the end
+	blankElementIndex := len(array) - 1
+
 	freq := 0
 
 	freqMap := make(map[int]int)
 
 	terminateNow := false
 
+	numberOfLoops := 0
+
 	for {
-		for _, num := range array {
+		for i, num := range array {
+
+			if i == blankElementIndex {
+				continue
+			}
+
 			number, _ := strconv.Atoi(num)
 			freq += number
 
@@ -55,10 +65,13 @@ func main() {
 			}
 		}
 
+		numberOfLoops++
+
 		if terminateNow {
 			break
 		}
 	}
 
-	fmt.Println(freq)
+	fmt.Println("The number of loops: ", numberOfLoops)
+	fmt.Println("Twice frequency is: ", freq)
 }
