@@ -92,20 +92,19 @@ func main() {
 		}
 	}
 
-	// TODO: finish this
+	biggestMinute := -1
+	biggestMinuteAmount := -1
+	maxId := -1
 
-	//for id, guard := range listOfGuards {
+	for id, guard := range listOfGuards {
+		for minute, val := range guard.minutes {
+			if val > biggestMinuteAmount {
+				biggestMinute = minute
+				biggestMinuteAmount = val
+				maxId = id
+			}
+		}
+	}
 
-	//	biggestMinute := -1
-	//	biggestMinuteAmount := -1
-
-	//	for minute, val := range listOfGuards[maxId].minutes {
-	//		if val > biggestMinuteAmount {
-	//			biggestMinute = minute
-	//			biggestMinuteAmount = val
-	//		}
-	//	}
-	//}
-
-	//fmt.Println(maxId * biggestMinute)
+	fmt.Println(maxId * biggestMinute)
 }
