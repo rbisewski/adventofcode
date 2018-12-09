@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 )
 
 func main() {
@@ -27,16 +28,16 @@ func main() {
 		os.Exit(1)
 	}
 
-	polymerString := string(bytes)
+	polymerString := strings.TrimSpace(string(bytes))
 
 	polymer := []rune(polymerString)
 
 	for {
-		unitsReplaced := 0
+		unitsReplaced := false
 		currentChar := '0'
 		previousChar := '0'
 
-		for char := range currentPolymer {
+		for i, char := range polymer {
 
 			if currentChar == '0' {
 				currentChar = char
@@ -46,13 +47,29 @@ func main() {
 			previousChar = currentChar
 			currentChar = char
 
-			// TODO: check if the current char is same letter but opposite char, in which case trim the rune
+			// check if the current char is same letter but opposite char, in which case trim the rune
+			if previousChar+32 == currentChar {
+				unitsReplaced = true
+
+			} else if previousChar-32 == currentChar {
+				unitsReplaced = true
+			}
+
+			if unitsReplaced {
+				polymer[i] = '0'
+				polymer[i-1] = '0'
+				break
+			}
 		}
 
-		if unitsReplaced == 0 {
+		polymerString = string(polymer)
+		polymerString = strings.Replace(polymerString, "00", "", -1)
+		polymer = []rune(polymerString)
+
+		if unitsReplaced == false {
 			break
 		}
 	}
 
-	fmt.Println(polymer)
+	fmt.Println(len(polymer))
 }
