@@ -56,15 +56,10 @@ func main() {
 			}
 
 			if unitsReplaced {
-				polymer[i] = '0'
-				polymer[i-1] = '0'
+				polymer = append(polymer[:i-1], polymer[i+1:]...)
 				break
 			}
 		}
-
-		polymerString = string(polymer)
-		polymerString = strings.Replace(polymerString, "00", "", -1)
-		polymer = []rune(polymerString)
 
 		if unitsReplaced == false {
 			break
