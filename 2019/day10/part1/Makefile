@@ -1,5 +1,5 @@
 # Project name
-PROJECT_NAME=day07
+PROJECT_NAME=day10
 
 # Version
 VERSION = `date +%y.%m`
@@ -10,11 +10,10 @@ ifndef VERSION
 endif
 
 # Flags
-CFLAGS = -std=c++17 \
+CFLAGS = -std=c++2a \
          -O2 \
          -fpic \
          -Wall \
-         -Weffc++ \
          -Wextra \
          -Wpedantic \
          -Wno-missing-braces \
