@@ -296,7 +296,6 @@ impl EHPR {
         }
     }
 
-
     fn set_location(&mut self, loc: (i64, i64)) {
         self.loc = loc
     }
@@ -359,7 +358,6 @@ impl EHPR {
 
     fn tick(&mut self) -> bool {
         match self.comp.run() {
-
             // HALT if done
             Signal::Halt => return false,
 
@@ -412,7 +410,6 @@ fn part1(inp: &Vec<i64>) -> i64 {
 }
 
 fn part2(inp: &Vec<i64>) {
-
     // this is similar to the day 8 problem
     let mut robot = EHPR::new(&inp, (6, 45));
     robot.board[0][0] = WHITE;
