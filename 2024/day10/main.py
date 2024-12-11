@@ -66,14 +66,33 @@ def partOne(filename):
     print(f"Part One: {total}")
 
 def partTwo(filename):
+    global successfulHikes
     total = 0
 
+    grid = []
+    length = 0
+    height = 0
     with open(filename) as fh:
         for line in fh:
-            pass
+            row = [int(x) for x in list(line.strip())]
+            grid.append(row)
+            length = len(row)
+            height += 1
+
+    trailHeadStart = []
+    for y in range(height):
+        for x in range(length):
+            if grid[y][x] == 0:
+                trailHeadStart.append([x,y])
+
+    for pos in trailHeadStart:
+        successfulHikes = []
+        path = {"start": pos, "points": [{"topology": 0, "coord": pos}]}
+        hike(grid, path, pos)
+        total += len(successfulHikes)
 
     print(f"Part Two: {total}")
 
 # ---
 partOne("input1.txt")
-partTwo("input0.txt")
+partTwo("input1.txt")
