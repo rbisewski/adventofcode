@@ -1,5 +1,3 @@
-import copy
-
 def partOne(filename):
     checksum = 0
 
@@ -55,57 +53,48 @@ def partTwo(filename):
 
     id = 0
     isID = True
-    blockState = []
+    fs = []
     for d in diskmap:
         if isID:
             for i in range(d):
-                blockState.append(id)
+                fs.append(id)
             id += 1
             isID = False
         elif not isID:
             if d > 0:
                 for i in range(d):
-                    blockState.append(".")
+                    fs.append(".")
             isID = True
 
-    fs = blockState
-    files = {}
-    for i in range(len(fs)):
-        id = fs[i]
-        if files.get(id):
-            files[id].append(i)
+    blockCount = {}
+    for f in fs:
+        if blockCount.get(f):
+            blockCount[f] += 1
         else:
-            files[id] = [i]
+            blockCount[f] = 1
 
-    cursor = len(fs)-1
-    numbers = []
-    while cursor >= 0:
-        for f in files:
-            if f == '.':
-                continue
-
-            elif cursor in files[f]:
-                filesize = len(files[f])
-                for i in files['.']:
-                    if numbers == []:
-                        numbers.append(i)
-
-                    elif filesize == len(numbers):
-                        oldFileLocation = copy.deepcopy(files[f])
-                        files[f] = numbers
-                        files[f].sort()
-                        files['.'] = files['.'] + oldFileLocation
-                        files['.'].sort()
-                        for n in numbers:
-                            files['.'].remove(n)
-                        break
-
-                    elif i == numbers[len(numbers)-1] + 1:
-                        numbers.append(i)
-
-                numbers = []
-                filesize = 0
-
+    last = len(fs)-1
+    cursor = fs[last]
+    while cursor != 0:
+        size = blockCount[cursor]
+        previous = 0
+        fileMoved = False
+        while True:
+            if fileMoved:
+                break
+            a = fs.index('.', previous + 1)
+            if a > fs.index(cursor):
+                break
+            for i in range(size):
+                if fs[a + i] != '.':
+                    previous = a
+                    break
+                elif i == size-1:
+                    for e in range(size):
+                        fs[fs.index(cursor)] = '.'
+                    for j in range(size):
+                        fs[a + j] = cursor
+                    fileMoved = True
         cursor -= 1
 
     pos = 0
