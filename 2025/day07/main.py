@@ -72,7 +72,6 @@ def partOne(filename):
     print(f"Part One: {total}")
 
 def partTwo(filename):
-    global world_line
     lines = []
 
     with open(filename) as fh:
